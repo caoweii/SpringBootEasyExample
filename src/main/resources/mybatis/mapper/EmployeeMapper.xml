@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhou.mapper.EmployeeMapper">
+    <!--显示全体雇员-->
+         <!--根据id查找雇员-->
+     <select id="getEmployeeById" parameterType="String" resultType="Employee">
+        SELECT * from employee where id=#{id}
+     </select>
+
+    <select id="getEmployeeList" resultMap="EmployeeDepartment">
+        SELECT e.id eid,e.last_name elast_name,e.email eemail,e.birth ebirth,e.gender egender,e.departmentId did,d.departmentName dname
+        FROM
+        employee e,department d
+        WHERE e.departmentId = d.id
+    </select>
+    <resultMap id="EmployeeDepartment" type="com.zhou.pojo.Employee">
+        <result property="id" column="eid"></result>
+        <result property="last_name" column="elast_name"></result>
+        <result property="email" column="eemail"></result>
+        <result property="birth" column="ebirth"></result>
+        <result property="gender" column="egender"></result>
+        <association property="department" javaType="com.zhou.pojo.Department">
+            <result property="id" column="did"></result>
+            <result property="departmentName" column="dname"></result>
+        </association>
+    </resultMap>
+    <!--增加一个雇员-->
+     <insert id="addEmployee" parameterType="Employee">
+       insert into employee (id,last_name,email,birth,gender,departmentId) values (#{id},#{last_name},#{email},#{birth},#{gender},#{department.id})
+     </insert>
+
+     <!--更新雇员-->
+     <update id="updateEmployee" parameterType="Employee">
+        update employee set last_name=#{last_name},email=#{email},birth=#{birth},gender=#{gender},departmentId=#{department.id}
+        where id=#{id}
+     </update>
+
+     <!--删除雇员-->
+     <delete id="deleteEmployeeById" parameterType="int">
+        delete from employee where id=#{id}
+     </delete>
+
+
+</mapper>
